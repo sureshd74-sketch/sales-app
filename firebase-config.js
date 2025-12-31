@@ -3,12 +3,13 @@
 // Get them from: Firebase Console > Project Settings > General > Your apps
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBHTdpLxPSwL1jfE17C5XokffgOGBLsXj4",
+  authDomain: "xeltrix-sales-app.firebaseapp.com",
+  projectId: "xeltrix-sales-app",
+  storageBucket: "xeltrix-sales-app.appspot.com", // ✅ FIXED
+  messagingSenderId: "687444776584",
+  appId: "1:687444776584:web:e022e44840e22fe74eb13d",
+  measurementId: "G-SH07BK2VMD"
 };
 
 // Initialize Firebase
