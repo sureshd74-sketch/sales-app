@@ -1,0 +1,44 @@
+{
+  "name": "Xeltrix Sales App",
+  "short_name": "Sales App",
+  "description": "Mobile Sales Management App for Xeltrix",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0b2c3d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "xeltrix-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "xeltrix-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Add Sale",
+      "short_name": "Sale",
+      "description": "Quickly add a new sale",
+      "url": "/?action=sale",
+      "icons": [{ "src": "xeltrix-logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Add Visit",
+      "short_name": "Visit",
+      "description": "Quickly add a new visit",
+      "url": "/?action=visit",
+      "icons": [{ "src": "xeltrix-logo.png", "sizes": "96x96" }]
+    }
+  ]
+}
+
+

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b2c3d">
+  <meta name="description" content="Xeltrix Sales App - Mobile Sales Management">
+  <title>Xeltrix Sales App</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="xeltrix-logo.png">
+</head>
+<body>
+  <!-- Logo Header -->
+  <div class="logo-container">
+    <img src="xeltrix-logo.png" alt="XELTRIX Logo" class="app-logo">
+  </div>
+
+  <!-- Language Toggle -->
+  <header>
+    <button id="langBtn" class="lang-toggle" aria-label="Toggle Language">EN / TA</button>
+  </header>
+
+  <main class="app-container">
+    <!-- Login/Select Salesperson Screen -->
+    <section id="loginScreen" class="screen active">
+      <div class="card">
+        <h2 id="loginTitle">Select Salesperson</h2>
+        <form id="salespersonForm" autocomplete="off">
+          <label id="salespersonLabel" for="salespersonSelect">Select Salesperson</label>
+          <select id="salespersonSelect" required>
+            <option value="" disabled selected id="selectPlaceholder">Select your name</option>
+            <option value="maruthu">Maruthu</option>
+            <option value="nagaraj">Nagaraj</option>
+            <option value="vetri">Vetri</option>
+            <option value="admin" id="adminOption">Admin</option>
+          </select>
+          <div id="adminPasswordContainer" style="display: none;">
+            <label for="adminPassword">Admin Password</label>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+          </div>
+          <button type="submit" class="action-btn" id="continueBtn">Continue</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Home Screen -->
+    <section id="homeScreen" class="screen">
+      <div class="card">
+        <h2 id="welcomeTitle">Welcome</h2>
+        <p id="welcomeText" class="welcome-text"></p>
+        <button class="nav-btn" id="catalogBtn">Product Catalog</button>
+        <button class="nav-btn" id="saleBtn">Add Sale</button>
+        <button class="nav-btn" id="visitBtn">Add Visit</button>
+        <button class="nav-btn" id="adminBtn" style="display: none;">Admin Dashboard</button>
+        <button class="nav-btn secondary" id="logoutBtn">Logout</button>
+      </div>
+    </section>
+
+    <!-- Product Catalog Screen -->
+    <section id="catalogScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="catalogTitle">Product Catalog</h2>
+          <button class="icon-btn" id="catalogBackBtn">←</button>
+        </div>
+        <div id="adminCatalogControls" style="display: none;">
+          <button class="action-btn" id="addProductBtn">Add Product</button>
+          <button class="nav-btn" id="bulkUploadBtn">Bulk Upload (CSV/Excel)</button>
+          <button class="nav-btn" id="exportCatalogBtn">Export Catalog</button>
+        </div>
+        <div id="qrScannerContainer" style="display: none;">
+          <button class="nav-btn" id="scanQRBtn">Scan QR Code</button>
+          <video id="qrVideo" style="display: none; width: 100%; max-width: 300px; margin: 10px auto; border-radius: 8px;"></video>
+          <canvas id="qrCanvas" style="display: none;"></canvas>
+        </div>
+        <div class="search-container">
+          <input type="text" id="productSearch" placeholder="Search products..." class="search-input">
+        </div>
+        <div id="productList" class="product-list"></div>
+      </div>
+    </section>
+
+    <!-- Add/Edit Product Form (Admin Only) -->
+    <section id="productFormScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="productFormTitle">Add Product</h2>
+          <button class="icon-btn" id="productFormBackBtn">←</button>
+        </div>
+        <form id="productForm" autocomplete="off">
+          <label for="productNameEn">Product Name (English)</label>
+          <input type="text" id="productNameEn" required>
+          
+          <label for="productNameTa">Product Name (Tamil)</label>
+          <input type="text" id="productNameTa" required>
+          
+          <label for="productUnit">Unit</label>
+          <select id="productUnit" required>
+            <option value="Litre">Litre</option>
+            <option value="Kg">Kg</option>
+            <option value="Bottle">Bottle</option>
+            <option value="Piece">Piece</option>
+            <option value="Box">Box</option>
+            <option value="Pack">Pack</option>
+            <option value="Other">Other</option>
+          </select>
+          
+          <label for="productPrice">Price (₹)</label>
+          <input type="number" id="productPrice" step="0.01" min="0" required>
+          
+          <label for="productImage">Product Image</label>
+          <input type="file" id="productImage" accept="image/*" style="margin-bottom: 8px;">
+          <div id="productImagePreview" class="image-preview-container" style="display: none;">
+            <img id="productImagePreviewImg" src="" alt="Product preview" class="image-preview">
+            <button type="button" class="icon-btn small danger" id="removeImageBtn" style="margin-top: 8px;">Remove Image</button>
+          </div>
+          <small style="color: #666; display: block; margin-bottom: 14px;">Optional: Upload product photo (JPG, PNG - Max 2MB)</small>
+          
+          <label class="checkbox-label">
+            <input type="checkbox" id="productActive" checked>
+            <span id="activeLabel">Active</span>
+          </label>
+          
+          <button type="submit" class="action-btn" id="saveProductBtn">Save Product</button>
+          <button type="button" class="nav-btn secondary" id="cancelProductBtn">Cancel</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Sales Entry Screen -->
+    <section id="saleScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="saleTitle">Add Sale</h2>
+          <button class="icon-btn" id="saleBackBtn">←</button>
+        </div>
+        <form id="saleForm" autocomplete="off">
+          <label for="saleDate">Date</label>
+          <input type="date" id="saleDate" required>
+          
+          <label for="saleCustomer">Customer Name</label>
+          <input type="text" id="saleCustomer" required>
+          
+          <label for="saleProduct">Product</label>
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <select id="saleProduct" required style="flex: 1;">
+              <option value="" disabled selected>Select product</option>
+            </select>
+            <button type="button" class="icon-btn" id="scanProductQRBtn" title="Scan QR Code" style="width: auto; padding: 12px;">📷</button>
+          </div>
+          <div id="qrScannerArea" style="display: none; margin-bottom: 14px;">
+            <video id="qrVideo" style="width: 100%; max-width: 300px; margin: 0 auto; border-radius: 8px; display: block;"></video>
+            <canvas id="qrCanvas" style="display: none;"></canvas>
+            <button type="button" class="nav-btn secondary" id="stopQRScanBtn">Stop Scanning</button>
+          </div>
+          
+          <label for="saleQuantity">Quantity</label>
+          <input type="number" id="saleQuantity" step="0.01" min="0.01" required>
+          
+          <label for="salePrice">Price per Unit (₹)</label>
+          <input type="number" id="salePrice" step="0.01" min="0" readonly>
+          
+          <label for="saleTotal">Total (₹)</label>
+          <input type="number" id="saleTotal" step="0.01" readonly>
+          
+          <label for="salePayment">Payment Mode</label>
+          <select id="salePayment" required>
+            <option value="Cash">Cash</option>
+            <option value="Credit">Credit</option>
+            <option value="UPI">UPI</option>
+          </select>
+          
+          <label for="saleRemarks">Remarks</label>
+          <textarea id="saleRemarks" rows="3"></textarea>
+          
+          <button type="submit" class="action-btn" id="saveSaleBtn">Save Sale</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Visit Entry Screen -->
+    <section id="visitScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="visitTitle">Add Visit</h2>
+          <button class="icon-btn" id="visitBackBtn">←</button>
+        </div>
+        <form id="visitForm" autocomplete="off">
+          <label for="visitDate">Date</label>
+          <input type="date" id="visitDate" required>
+          
+          <label for="visitCustomer">Customer/Shop Name</label>
+          <input type="text" id="visitCustomer" required>
+          
+          <label for="visitLocation">Location</label>
+          <input type="text" id="visitLocation">
+          
+          <label for="visitPurpose">Purpose of Visit</label>
+          <textarea id="visitPurpose" rows="3" required></textarea>
+          
+          <label for="visitNotes">Notes</label>
+          <textarea id="visitNotes" rows="3"></textarea>
+          
+          <button type="submit" class="action-btn" id="saveVisitBtn">Save Visit</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Bulk Upload Screen -->
+    <section id="bulkUploadScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="bulkUploadTitle">Bulk Upload Products</h2>
+          <button class="icon-btn" id="bulkUploadBackBtn">←</button>
+        </div>
+        <div class="upload-instructions">
+          <p><strong>Instructions:</strong></p>
+          <ol>
+            <li>Download the template CSV file</li>
+            <li>Fill in: Product Name (EN), Product Name (TA), Unit, Price</li>
+            <li>Upload the CSV file</li>
+          </ol>
+          <button class="nav-btn" id="downloadTemplateBtn">Download Template</button>
+        </div>
+        <form id="bulkUploadForm">
+          <label for="csvFile">Select CSV/Excel File</label>
+          <input type="file" id="csvFile" accept=".csv,.xlsx,.xls" required>
+          <button type="submit" class="action-btn" id="uploadFileBtn">Upload & Import</button>
+        </form>
+        <div id="uploadProgress" style="display: none;">
+          <p id="uploadStatus">Processing...</p>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports Screen -->
+    <section id="reportsScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="reportsTitle">Reports</h2>
+          <button class="icon-btn" id="reportsBackBtn">←</button>
+        </div>
+        <div class="report-tabs">
+          <button class="tab-btn active" data-report="daily">Daily</button>
+          <button class="tab-btn" data-report="monthly">Monthly</button>
+          <button class="tab-btn" data-report="custom">Custom</button>
+        </div>
+        <div id="reportContent" class="report-content">
+          <div id="dailyReport" class="report-section">
+            <h3>Today's Summary</h3>
+            <div class="summary-cards">
+              <div class="summary-card">
+                <div class="summary-label">Total Sales</div>
+                <div class="summary-value" id="dailyTotalSales">₹0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Total Orders</div>
+                <div class="summary-value" id="dailyTotalOrders">0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Cash</div>
+                <div class="summary-value" id="dailyCash">₹0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Credit</div>
+                <div class="summary-value" id="dailyCredit">₹0</div>
+              </div>
+            </div>
+            <button class="action-btn" id="refreshDailyBtn">Refresh</button>
+            <button class="nav-btn" id="downloadDailyBtn">Download Report</button>
+          </div>
+          <div id="monthlyReport" class="report-section" style="display: none;">
+            <label for="monthSelect">Select Month</label>
+            <input type="month" id="monthSelect">
+            <h3 id="monthlyReportTitle">Monthly Summary</h3>
+            <div class="summary-cards">
+              <div class="summary-card">
+                <div class="summary-label">Total Sales</div>
+                <div class="summary-value" id="monthlyTotalSales">₹0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Total Orders</div>
+                <div class="summary-value" id="monthlyTotalOrders">0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Avg Daily Sales</div>
+                <div class="summary-value" id="monthlyAvgDaily">₹0</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Top Salesperson</div>
+                <div class="summary-value" id="monthlyTopSalesperson">-</div>
+              </div>
+            </div>
+            <button class="action-btn" id="refreshMonthlyBtn">Refresh</button>
+            <button class="nav-btn" id="downloadMonthlyBtn">Download Report</button>
+          </div>
+          <div id="customReport" class="report-section" style="display: none;">
+            <label for="customDateFrom">From Date</label>
+            <input type="date" id="customDateFrom">
+            <label for="customDateTo">To Date</label>
+            <input type="date" id="customDateTo">
+            <button class="action-btn" id="generateCustomBtn">Generate Report</button>
+            <div id="customReportContent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Dashboard Screen -->
+    <section id="adminScreen" class="screen">
+      <div class="card">
+        <div class="screen-header">
+          <h2 id="adminTitle">Admin Dashboard</h2>
+          <button class="icon-btn" id="adminBackBtn">←</button>
+        </div>
+        <div class="admin-tabs">
+          <button class="tab-btn active" data-tab="sales">Sales</button>
+          <button class="tab-btn" data-tab="visits">Visits</button>
+          <button class="tab-btn" data-tab="reports">Reports</button>
+        </div>
+        <div class="filters">
+          <label for="filterDateFrom">From Date</label>
+          <input type="date" id="filterDateFrom">
+          <label for="filterDateTo">To Date</label>
+          <input type="date" id="filterDateTo">
+          <label for="filterSalesperson">Salesperson</label>
+          <select id="filterSalesperson">
+            <option value="">All</option>
+            <option value="maruthu">Maruthu</option>
+            <option value="nagaraj">Nagaraj</option>
+            <option value="vetri">Vetri</option>
+          </select>
+          <button class="action-btn" id="applyFiltersBtn">Apply Filters</button>
+          <button class="nav-btn secondary" id="exportBtn">Export to Excel</button>
+          <button class="nav-btn secondary" id="exportPDFBtn">Export to PDF</button>
+        </div>
+        <div id="adminContent" class="admin-content">
+          <div id="salesList" class="data-list"></div>
+          <div id="visitsList" class="data-list" style="display: none;"></div>
+          <div id="reportsTabContent" style="display: none;">
+            <button class="action-btn" id="viewReportsBtn">View Detailed Reports</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Choose Backend: LocalStorage (No Firebase) or Firebase -->
+  <!-- Option 1: LocalStorage (No setup needed - works immediately!) -->
+  <script src="localStorage-backend.js"></script>
+  
+  <!-- Option 2: Firebase (Uncomment when ready to use Firebase) -->
+  <!--
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  -->
+  
+  <!-- Optional: QR Code Library (uncomment for full QR scanning) -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script> -->
+  
+  <!-- App Scripts -->
+  <script src="script.js"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => {
+            console.log('Service Worker registered successfully:', reg.scope);
+            // Check for updates
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker available
+                  if (confirm('New version available! Reload to update?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          })
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
